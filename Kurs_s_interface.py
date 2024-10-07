@@ -14,7 +14,8 @@ def exchange():
             data = response.json()
             if code in data['rates']:
                 exchange_rate = data['rates'][code]
-                mb.showinfo('Курс обмена', f'Курс: {exchange_rate:.2f} {code} за 1 единицу.')
+                c_curs = curs[code]
+                mb.showinfo('Курс обмена', f'Курс: {exchange_rate:.2f} {c_curs} за 1 доллар.')
             else:
                 mb.showerror('Ошибка', f'Валюта {code} не найдена!')
         except Exception as e:
@@ -23,6 +24,24 @@ def exchange():
         mb.showwarning('Внимание!', 'Введите код валюты!')
 
 
+def restart_c_label(event):
+    code = combobox.get()
+    name = curs[code]
+    c_label.config(text=name)
+
+
+curs = {
+        'RUB': 'Российский рубль',
+        'EUR': 'Евро',
+        'GBP': 'Британский фунт стерлингов',
+        'JPY': 'Японская йена',
+        'CNY': 'Китайская йена',
+        'KZT': 'Казахский тенге',
+        'UZS': 'Узбекский сум',
+        'AED': 'Арабский дирхам',
+        'CHF': 'Швейцарский франк',
+        'CAD': 'Канадский доллар'
+}
 
 w = Tk()
 w.title('Курсы обмена валюты')
@@ -30,12 +49,12 @@ w.geometry('360x180')
 
 Label(text = 'Выберите код валюты').pack(pady = 10, padx = 10)
 
-curs = ['RUB', 'EUR', 'GBP', 'JPY', 'CNY', 'KZT', 'UZS', 'AED', 'CHF', 'CAD']
-combobox = ttk.Combobox(values = curs)
+combobox = ttk.Combobox(values = list(curs.keys()))
 combobox.pack(pady =10, padx = 10)
+combobox.bind('<<ComboboxSelected>>', restart_c_label)
 
-# entry = Entry()
-# entry.pack(pady = 10, padx = 10)
+c_label = ttk.Label()
+c_label.pack(pady =10, padx = 10)
 
 Button(text = 'Получить курс обмена валюты', command = exchange).pack(pady = 10, padx = 10)
 
