@@ -8,7 +8,6 @@ from tkinter import ttk
 def exchange():
     t_code = t_combobox.get()
     b_code = b_combobox.get()
-
     if t_code and b_code:
         try:
             response = requests.get(f'https://open.er-api.com/v6/latest/{b_code}')
@@ -27,10 +26,16 @@ def exchange():
         mb.showwarning('Внимание!', 'Введите код валюты!')
 
 
-def restart_c_label(event):
+def restart_b_label(event):
+    code = b_combobox.get()
+    name = curs[code]
+    b_label.config(text=name)
+
+
+def restart_t_label(event):
     code = t_combobox.get()
     name = curs[code]
-    c_label.config(text=name)
+    t_label.config(text=name)
 
 
 curs = {
@@ -47,6 +52,7 @@ curs = {
         'CAD': 'Канадский доллар'
 }
 
+
 w = Tk()
 w.title('Курсы обмена валюты')
 w.geometry('360x300')
@@ -55,16 +61,19 @@ Label(text = 'Базовая валюта').pack(pady = 10, padx = 10)
 
 b_combobox = ttk.Combobox(values = list(curs.keys()))
 b_combobox.pack(pady =10, padx = 10)
+b_combobox.bind('<<ComboboxSelected>>', restart_b_label)
 
+b_label = ttk.Label()
+b_label.pack(pady =10, padx = 10)
 
 Label(text = 'Целевая валюта').pack(pady = 10, padx = 10)
 
 t_combobox = ttk.Combobox(values = list(curs.keys()))
 t_combobox.pack(pady =10, padx = 10)
-t_combobox.bind('<<ComboboxSelected>>', restart_c_label)
+t_combobox.bind('<<ComboboxSelected>>', restart_t_label)
 
-c_label = ttk.Label()
-c_label.pack(pady =10, padx = 10)
+t_label = ttk.Label()
+t_label.pack(pady =10, padx = 10)
 
 Button(text = 'Получить курс обмена', command = exchange).pack(pady = 10, padx = 10)
 
